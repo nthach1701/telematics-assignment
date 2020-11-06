@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+      auto: false
+    credentials:
+      access-key: test
+      secret-key: test
+    stack:
+      auto: false    
+sqs:
+  url: http://localhost:4566/000000000000/input-file-q
