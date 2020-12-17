@@ -30,7 +30,7 @@ public class UserInfoRESTController {
     static String forumTableName = "user_info";
 
     @RequestMapping("/user-info/{id}")
-    public ResponseEntity<String> GetUserInfo(@PathVariable("id") String id) {
+    public ResponseEntity<String> getUserInfo(@PathVariable("id") String id) {
         Table table = dynamoDB.getTable(forumTableName);
         Item item = null;
         try {
@@ -39,7 +39,7 @@ public class UserInfoRESTController {
             logger.error("object not found");
         }
         if (item != null)
-            return new ResponseEntity<String>(item.toJSON(), HttpStatus.OK);
+            return new ResponseEntity<>(item.toJSON(), HttpStatus.OK);
         else
             return new ResponseEntity<>("Object not found for id : " + id, HttpStatus.NOT_FOUND);
     }
