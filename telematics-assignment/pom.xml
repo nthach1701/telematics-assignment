@@ -18,6 +18,20 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+
+		<jacoco.utReportFolder>${project.build.directory}/jacoco/test
+		</jacoco.utReportFolder>
+		<jacoco.utReportFile>${jacoco.utReportFolder}/jacoco.exec
+		</jacoco.utReportFile>
+		<project.testresult.directory>${project.build.directory}/test-results
+		</project.testresult.directory>
+		<junit.utReportFolder>${project.testresult.directory}/test
+		</junit.utReportFolder>
+		<sonar.coverage.jacoco.xmlReportPaths>${jacoco.utReportFolder}/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+
 	</properties>
 
 	<dependencies>
@@ -66,15 +80,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -87,14 +93,48 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<testFailureIgnore>true</testFailureIgnore>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>${jacoco.utReportFile}
+						</jacoco-agent.destfile>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
+				<configuration>
+					<dataFile>${jacoco.utReportFile}</dataFile>
+					<destFile>${jacoco.utReportFile}</destFile>
+					<outputDirectory>${jacoco.utReportFolder}</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.host.url>http://localhost:9000</sonar.host.url>
+			</properties>
+		</profile>
+	</profiles>
 </project>
